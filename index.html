@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>My Todo List App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>My Todo List</h1>
+        <form id="todo-form">
+            <input type="text" id="todo-input" placeholder="Add a new task..." autocomplete="off" required>
+            <button type="submit">Add</button>
+        </form>
+        <ul id="todo-list"></ul>
+    </div>
+    <script>
+        const form = document.getElementById('todo-form');
+        const input = document.getElementById('todo-input');
+        const list = document.getElementById('todo-list');
+
+        function createTodoItem(text, completed = false) {
+            const li = document.createElement('li');
+            const span = document.createElement('span');
+            span.textContent = text;
+            if (completed) span.classList.add('completed');
+
+            const actions = document.createElement('div');
+            actions.className = 'actions';
+
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.checked = completed;
+            checkbox.addEventListener('change', () => {
+                span.classList.toggle('completed');
+            });
+
+            const delBtn = document.createElement('button');
+            delBtn.textContent = 'Delete';
+            delBtn.addEventListener('click', () => {
+                li.remove();
+            });
+
+            actions.appendChild(checkbox);
+            actions.appendChild(delBtn);
+
+            li.appendChild(span);
+            li.appendChild(actions);
+
+            return li;
+        }
+
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            const value = input.value.trim();
+            if (value) {
+                list.appendChild(createTodoItem(value));
+                input.value = '';
+                input.focus();
+            }
+        });
+    </script>
+</body>
+</html>

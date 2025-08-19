@@ -35,7 +35,7 @@ Welcome to **My Todo-List-App** – a sleek, intuitive, and lightning-fast task 
 
 ## 📬 Contact
 
-Questions or feedback? Connect on [LinkedIn](https://www.linkedin.com/in/yourprofile) or open an issue!
+Questions or feedback? Connect on [LinkedIn](https://www.linkedin.com/in/edwin-tsembegano-13800b23a)) or open an issue!
 
 ---
 

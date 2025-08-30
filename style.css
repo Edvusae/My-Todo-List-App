@@ -12,6 +12,24 @@ body {
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
             padding: 24px;
         }
+        #todo-timer {
+            flex: 0 0 120px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        #clear-completed {
+            padding: 8px 16px;
+            background: #e81123;
+            border: none;
+            border-radius: 4px;
+            color: #fff;
+            cursor: pointer;
+        }
+        #clear-completed:hover {
+            background: #c50f1f;
+        }
         h1 {
             text-align: center;
             color: #333;

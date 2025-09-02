@@ -7,15 +7,18 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- Main Container -->
     <div class="container">
         <h1>My Todo List</h1>
         <form id="todo-form">
+            <!-- Input field for new tasks -->
             <input type="text" id="todo-input" placeholder="Add a new task..." autocomplete="off" required>
+            <!-- Input field for timer -->
+            <input type="number" id="todo-timer" placeholder="Time (seconds)" min="1">
             <button type="submit">Add</button>
             <button type="button" id="clear-completed">Clear Completed</button>
         </form>
         <ul id="todo-list"></ul>
-        <input type="number" id="todo-timer" placeholder="Time (seconds)" min="1">
         
     </div>
     <script src="index.js"></script>

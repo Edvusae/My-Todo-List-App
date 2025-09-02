@@ -5,12 +5,16 @@ body {
             padding: 0;
         }
         .container {
+            display: flex;
+            flex-direction: column;
             max-width: 400px;
             margin: 40px auto;
             background: #fff;
             border-radius: 8px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
             padding: 24px;
+            box-sizing: border-box;
+
         }
         #todo-timer {
             flex: 0 0 120px;
@@ -35,10 +39,21 @@ body {
             color: #333;
             margin-bottom: 16px;
         }
+        #todo-timer {
+            flex: 0 0 120px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
         form {
             display: flex;
             gap: 8px;
             margin-bottom: 20px;
+        }
+        #form {
+            display: flex;
+            gap: 8px;
         }
         input[type="text"] {
             flex: 1;

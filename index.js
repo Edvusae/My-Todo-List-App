@@ -1,3 +1,4 @@
+// DOM Elements
 const form = document.getElementById('todo-form');
 const input = document.getElementById('todo-input');
 const timerInput = document.getElementById('todo-timer');
@@ -6,16 +7,25 @@ const clearCompletedBtn = document.getElementById('clear-completed');
 
 // Create a new todo item with a timer
 function createTodoItem(text, timeLimit = 300) {
+    // Create list item elements
     const li = document.createElement('li');
+    // Create todo text element
     const span = document.createElement('span');
+    // Set the text content
     span.textContent = text;
+    // Append the todo text element to the list item
     li.appendChild(span);
 
+    // Create timer display element
     const timerDisplay = document.createElement('span');
+    // Set initial timer display
     timerDisplay.className = 'timer';
+    // Update the timer display with the initial time
     li.appendChild(timerDisplay);
 
+    // Create actions container
     const actions = document.createElement('div');
+    // Set class name
     actions.className = 'actions';
 
     const checkbox = document.createElement('input');

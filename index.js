@@ -28,14 +28,18 @@ function createTodoItem(text, timeLimit = 300) {
     // Set class name
     actions.className = 'actions';
 
+    // Create checkbox for completion
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
+    // Event listener for checkbox change
     checkbox.addEventListener('change', () => {
         span.classList.toggle('completed');
         clearInterval(timerInterval); // Stop timer when completed
     });
 
+    // Create delete button
     const delBtn = document.createElement('button');
+    // Set button text
     delBtn.textContent = 'Delete';
     delBtn.addEventListener('click', () => {
         list.removeChild(li);

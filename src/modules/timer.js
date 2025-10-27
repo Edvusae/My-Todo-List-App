@@ -1,6 +1,6 @@
 // timer.js
 import { state, updateTaskTime } from './state.js';
-import { updateTaskDisplay } from './dom.js'; // A function we'd create in dom.js
+import { updateTaskDisplay } from '../../dom.js'; // A function we'd create in dom.js
 
 let timerIntervals = {}; // To hold all active timer IDs
 

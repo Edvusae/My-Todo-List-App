@@ -1,4 +1,3 @@
-// DOM Elements
 const form = document.getElementById('todo-form');
 const input = document.getElementById('todo-input');
 const timerInput = document.getElementById('todo-timer');
@@ -34,7 +33,7 @@ function createTodoItem(text, timeLimit = 300) {
     // Event listener for checkbox change
     checkbox.addEventListener('change', () => {
         span.classList.toggle('completed');
-        clearInterval(timerInterval); // Stop timer when completed
+        clearInterval(timerInterval);
     });
 
     // Create delete button
@@ -57,7 +56,7 @@ function createTodoItem(text, timeLimit = 300) {
     resetBtn.textContent = 'Reset Timer';
     resetBtn.addEventListener('click', () => {
         clearInterval(timerInterval);
-        timeLimit = initialTimeLimit; // Reset to original time
+        timeLimit = initialTimeLimit;
         updateTimerDisplay();
         startTimer();
     });

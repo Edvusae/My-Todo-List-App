@@ -1,0 +1,63 @@
+/* styles/components.css */
+
+/* --- Task Input Area --- */
+.todo-form {
+    display: flex; /* Arrange inputs and add button horizontally */
+    gap: var(--spacing-sm); /* Space between elements */
+    margin-bottom: var(--spacing-xl);
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+}
+
+.todo-form input[type="text"],
+.todo-form input[type="number"] {
+    flex-grow: 1; /* Inputs take available space */
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: 1px solid var(--light-gray);
+    border-radius: var(--border-radius-sm);
+    font-size: 1rem;
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    min-width: 120px; /* Ensure inputs don't become too small */
+}
+
+.todo-form input:focus {
+    outline: none;
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); /* Subtle blue glow */
+}
+
+.btn {
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: none;
+    border-radius: var(--border-radius-sm);
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    white-space: nowrap; /* Prevent button text from wrapping */
+}
+
+.btn-primary {
+    background-color: var(--primary-blue);
+    color: var(--light-text);
+}
+
+.btn-primary:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+    box-shadow: var(--box-shadow-sm);
+}
+
+.btn-danger {
+    background-color: var(--primary-red);
+    color: var(--light-text);
+}
+
+.btn-danger:hover {
+    background-color: #bd2130; /* Darker red on hover */
+    box-shadow: var(--box-shadow-sm);
+}
+
+/* Style for the "Clear Completed" button if it's separate */
+.clear-completed-btn-container {
+    text-align: right; /* Align to the right */
+    margin-top: var(--spacing-md);
+}

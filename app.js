@@ -4,6 +4,7 @@ import { loadState, addTask, deleteTask, toggleCompleted, reorderTask, state } f
 import { renderTaskList, renderWeather, setupDOMReferences, toggleModal, getTaskFormData } from './dom/render.js';
 import { fetchWeather } from './modules/weather.js';
 import { startTimer, stopTimer } from './modules/timer.js';
+import './styles/main.css';
 
 // --- Global DOM References (Loaded from render.js) ---
 let DOMElements;

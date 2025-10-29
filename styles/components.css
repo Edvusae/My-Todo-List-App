@@ -61,3 +61,13 @@
     text-align: right; /* Align to the right */
     margin-top: var(--spacing-md);
 }
+
+/* --- Task List Items --- */
+.task-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-bottom: 1px solid var(--light-gray);
+    transition: background-color 0.2s ease-in-out;
+}

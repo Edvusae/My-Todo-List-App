@@ -215,3 +215,57 @@
     background-color: var(--primary-red);
     color: var(--light-text);
 }
+
+.task-actions .btn-danger:hover {
+    background-color: #bd2130;
+}
+
+/* styles/components.css */
+
+/* --- Weather Widget --- */
+.weather-widget {
+    background: var(--card-bg);
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--box-shadow-sm);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-xl);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-sm);
+    max-width: 300px; /* Smaller than todo list */
+    margin-left: auto; /* Center or align as needed */
+    margin-right: auto;
+}
+
+.weather-city {
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin-bottom: var(--spacing-xs);
+}
+
+.weather-icon {
+    width: 60px; /* Adjust size of weather icon */
+    height: 60px;
+    object-fit: contain;
+}
+
+.weather-temp {
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--primary-blue);
+}
+
+.weather-description {
+    font-size: 0.9rem;
+    color: var(--secondary-gray);
+    text-transform: capitalize;
+}
+
+/* Optional: Loading state for weather */
+.weather-loading {
+    color: var(--secondary-gray);
+    font-style: italic;
+}
+

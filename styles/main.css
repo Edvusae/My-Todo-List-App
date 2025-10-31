@@ -56,3 +56,62 @@ body {
     max-width: 600px; /* Limit width for better readability */
     margin-bottom: var(--spacing-xl); /* Space below the card if more content follows */
 }
+
+/* Update for styles/main.css */
+
+/* ... (previous body and container styles remain) ... */
+
+.main-layout-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Align content to the top */
+    gap: 40px; /* Space between the two columns */
+    padding: 40px 20px;
+    width: 100%;
+    max-width: 1200px; /* A wide container */
+}
+
+/* Ensure the main container class handles the column layout */
+.container { 
+    /* ... (rest of the container styles) ... */
+    max-width: none; /* Override previous max-width to allow flexible sizing */
+    flex-shrink: 0;
+}
+
+/* Explicit width for the auth and todo panels */
+#auth-container {
+    width: 350px; /* Fixed width for the login panel */
+}
+
+#todo-list-container {
+    flex-grow: 1; /* Todo list takes remaining space */
+    max-width: 600px; /* But keep it readable */
+}
+
+/* Media Query for smaller screens (mobile view) */
+@media (max-width: 900px) {
+    .main-layout-wrapper {
+        flex-direction: column; /* Stack the elements vertically */
+        align-items: center;
+        gap: 20px;
+    }
+    #auth-container, #todo-list-container {
+        width: 90%;
+        max-width: 500px;
+    }
+}
+        input[type="text"] {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            padding: 8px 16px;
+            background: var(--primary-blue);
+            border: none;
+            border-radius: 4px;
+            color: #fff;
+            cursor: pointer;
+        }

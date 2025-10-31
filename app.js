@@ -1,166 +1,151 @@
-import { loadState, addTask, deleteTask, toggleCompleted, reorderTask, state } from './modules/state.js';
-import { renderTaskList, renderWeather, setupDOMReferences, toggleModal, getTaskFormData } from './dom/render.js';
+// src/app.js
+
+import { state, clearLocalState } from './modules/state.js';
+import { renderTaskList, renderWeather, setupDOMReferences, toggleModal, getTaskFormData, toggleVisibility } from './dom/render.js';
 import { fetchWeather } from './modules/weather.js';
 import { startTimer, stopTimer } from './modules/timer.js';
-import '../../styles/main.css';
+import { onAuthStateChange, signInUser, signUpUser, signOutUser } from './modules/auth.js';
+import { addTaskToDB, updateTaskInDB, deleteTaskFromDB, loadTasksFromDB } from './modules/database.js';
 
-// --- Global DOM References (Loaded from render.js) ---
+// --- Global Context and DOM References ---
 let DOMElements;
+let unsubscribeFromAuth = null;
+
+// --- CRITICAL: Overwrite the local state functions to use the Database ---
+// We redefine the state management to call the database module instead of local storage.
+
+const addTask = async (text, timeLimit) => {
+    if (window.currentUser) {
+        await addTaskToDB(window.currentUser.uid, text, timeLimit);
+        // Database listener will re-render the list, no need to call renderTaskList here.
+    }
+};
+
+const toggleCompleted = async (taskId) => {
+    if (window.currentUser) {
+        const task = state.tasks.find(t => t.id === taskId);
+        if (task) {
+            await updateTaskInDB(window.currentUser.uid, taskId, { completed: !task.completed });
+        }
+    }
+};
+
+const deleteTask = async (taskId) => {
+    if (window.currentUser) {
+        await deleteTaskFromDB(window.currentUser.uid, taskId);
+    }
+};
+
+const reorderTask = async (draggedId, targetId) => {
+    // NOTE: Drag-and-drop state updates are complex with a real-time database.
+    // For this demonstration, we'll let the user reorder visually in the UI, 
+    // but the final state update requires saving the new 'order' property to DB.
+    // A robust solution would update the 'order' field of every item in the dragged range.
+    // For now, we'll log the action and rely on the database's order.
+    console.warn(`Drag-and-Drop: Order change detected (Task ${draggedId}) - 
+                 You would implement batch updates to Firestore here.`);
+    // A simple, effective implementation updates the database with the new array order.
+    // In a real app, we'd update a numeric 'order' field for all tasks.
+};
+
+// --- AUTHENTICATION & UI Management ---
 
 /**
- * Handles the submission of the new/edit task form.
+ * Handles all authentication form actions (Sign In/Up).
  * @param {Event} e - The form submit event.
  */
-function handleTaskSubmit(e) {
+async function handleAuthSubmit(e) {
     e.preventDefault();
-    
-    // 1. Get data from the form (implementation assumed in render.js)
-    const { text, timeLimit } = getTaskFormData(); 
+    const email = DOMElements.authEmail.value;
+    const password = DOMElements.authPassword.value;
 
-    if (text.trim() === '') {
-        alert('Task description cannot be empty!');
-        return;
+    try {
+        if (e.submitter.id === 'auth-sign-up-btn') {
+            await signUpUser(email, password);
+        } else {
+            await signInUser(email, password);
+        }
+        DOMElements.authForm.reset();
+    } catch (error) {
+        alert("Authentication Failed: " + error.message);
     }
-
-    // 2. Update state and re-render
-    addTask(text, timeLimit); 
-    renderTaskList(state.tasks, handleTaskAction);
-
-    // 3. Clean up UI
-    DOMElements.newTaskForm.reset();
-    toggleModal('hide'); // Hide the modal after submission
 }
 
 /**
- * Handles all task-related actions (clicks on buttons within a task).
- * Uses event delegation for efficiency and modern practice.
- * @param {Event} e - The click event.
+ * Core function to switch the UI and load data based on user authentication status.
+ * This is triggered by Firebase on every login/logout event.
+ * @param {object | null} user - The Firebase User object or null if logged out.
  */
-function handleTaskAction(e) {
-    const taskItem = e.target.closest('.task-item');
-    if (!taskItem) return;
-
-    const taskId = parseInt(taskItem.dataset.id);
-
-    if (e.target.classList.contains('task-delete-btn')) {
-        deleteTask(taskId);
-    } else if (e.target.classList.contains('task-complete-cb')) {
-        toggleCompleted(taskId);
-    } else if (e.target.classList.contains('task-timer-btn')) {
-        const task = state.tasks.find(t => t.id === taskId);
-        if (task && task.timerActive) {
-            stopTimer(taskId);
-        } else {
-            startTimer(taskId);
-        }
-    } else if (e.target.classList.contains('task-text')) {
-        // Feature: Open detail modal for editing (Logic implemented in render.js)
-        toggleModal('show', taskId);
-    }
+function handleAuthStateChange(user) {
+    window.currentUser = user;
     
-    // Re-render the list after any action
-    renderTaskList(state.tasks, handleTaskAction);
-}
+    // Clear any previous database listeners before establishing a new state
+    if (window.unsubscribeFromDB) {
+        window.unsubscribeFromDB();
+    }
 
-/**
- * Handles drag and drop events for reordering tasks.
- */
-function handleDragAction() {
-    let draggedId = null;
-
-    DOMElements.taskList.addEventListener('dragstart', (e) => {
-        const taskItem = e.target.closest('.task-item');
-        if (taskItem) {
-            draggedId = parseInt(taskItem.dataset.id);
-            // Must set data for drag to work
-            e.dataTransfer.setData('text/plain', draggedId.toString());
-            // Optional: Add a CSS class for visual feedback
-            setTimeout(() => taskItem.classList.add('dragging'), 0);
-        }
-    });
-
-    DOMElements.taskList.addEventListener('dragend', (e) => {
-        e.target.classList.remove('dragging');
-    });
-
-    DOMElements.taskList.addEventListener('dragover', (e) => {
-        e.preventDefault(); // Crucial: Allows a drop
+    if (user) {
+        // --- LOGGED IN STATE ---
+        DOMElements.authStatus.textContent = `Welcome, ${user.email}!`;
+        toggleVisibility(DOMElements.authForm, 'hide');
+        toggleVisibility(DOMElements.authSignOutBtn, 'show');
+        toggleVisibility(DOMElements.todoListContainer, 'show'); // Show main app
         
-        // Visual feedback for where the item will drop (pure JS skill!)
-        const afterElement = getDragAfterElement(DOMElements.taskList, e.clientY);
-        const draggable = document.querySelector('.dragging');
-        if (afterElement == null) {
-            DOMElements.taskList.appendChild(draggable);
-        } else {
-            DOMElements.taskList.insertBefore(draggable, afterElement);
-        }
-    });
+        // 🔑 KEY CHANGE: Start listening for real-time data from Firestore
+        window.unsubscribeFromDB = loadTasksFromDB(user.uid, (newTasks) => {
+             // This callback runs whenever the database data changes
+             state.tasks = newTasks;
+             renderTaskList(state.tasks, handleTaskAction);
+        });
 
-    DOMElements.taskList.addEventListener('drop', (e) => {
-        e.preventDefault();
-        
-        const droppedElement = document.querySelector('.dragging');
-        if (!droppedElement) return;
+    } else {
+        // --- LOGGED OUT STATE ---
+        DOMElements.authStatus.textContent = 'Please Sign In or Sign Up.';
+        toggleVisibility(DOMElements.authForm, 'show');
+        toggleVisibility(DOMElements.authSignOutBtn, 'hide');
+        toggleVisibility(DOMElements.todoListContainer, 'hide'); // Hide main app
 
-        const droppedId = parseInt(droppedElement.dataset.id);
-        const nextElement = droppedElement.nextElementSibling;
-        
-        let targetId = nextElement ? parseInt(nextElement.dataset.id) : null;
-        
-        // 1. Update the state based on the final DOM order
-        reorderTask(droppedId, targetId); 
-        
-        // 2. Clean up and re-render the final list
-        droppedElement.classList.remove('dragging');
+        // Clear local state and UI
+        clearLocalState(); // function to clear state.tasks and localStorage if any
         renderTaskList(state.tasks, handleTaskAction);
-    });
+    }
 }
 
-/**
- * Helper function for dragover to determine insertion point.
- * This is the tricky part of Vanilla JS Drag-and-Drop!
- */
-function getDragAfterElement(container, y) {
-    const draggableElements = [...container.querySelectorAll('.task-item:not(.dragging)')];
+// --- INITIALIZATION ---
 
-    return draggableElements.reduce((closest, child) => {
-        const box = child.getBoundingClientRect();
-        const offset = y - box.top - box.height / 2;
-        if (offset < 0 && offset > closest.offset) {
-            return { offset: offset, element: child };
-        } else {
-            return closest;
-        }
-    }, { offset: Number.NEGATIVE_INFINITY }).element;
-}
-
-
-/**
- * Initializes the entire application.
- */
 async function init() {
     // 1. Setup DOM References
     DOMElements = setupDOMReferences();
 
-    // 2. Load and Render Initial State
-    loadState();
-    renderTaskList(state.tasks, handleTaskAction);
-
-    // 3. Initialize Weather Feature
+    // 2. Initialize Weather Feature (Doesn't require user login)
     const weatherData = await fetchWeather();
     if (weatherData) {
-        renderWeather(weatherData); // Display weather in its dedicated DOM area
+        renderWeather(weatherData);
     }
 
-    // 4. Attach Main Event Listeners
-    DOMElements.newTaskForm.addEventListener('submit', handleTaskSubmit);
-    DOMElements.taskList.addEventListener('click', handleTaskAction); // Event delegation for task clicks
-    DOMElements.openModalBtn.addEventListener('click', () => toggleModal('show'));
+    // 3. Setup Authentication Listener
+    // This listener is the true app initializer now.
+    unsubscribeFromAuth = onAuthStateChange(handleAuthStateChange);
 
-    // 5. Initialize Drag and Drop
+    // 4. Attach Main Event Listeners
+    DOMElements.authForm.addEventListener('submit', handleAuthSubmit);
+    DOMElements.authSignOutBtn.addEventListener('click', signOutUser);
+
+    // Task-specific event listeners (now call the DB-wrapped functions)
+    DOMElements.newTaskForm.addEventListener('submit', handleTaskSubmit);
+    DOMElements.taskList.addEventListener('click', handleTaskAction); // Event delegation
+    DOMElements.openModalBtn.addEventListener('click', () => toggleModal('show'));
+    
+    // 5. Initialize Drag and Drop (Still important for UX)
     handleDragAction();
     
-    console.log('Todo List App Initialized (Vanilla JS Mastered!)');
+    // Cleanup listener on window close (good practice)
+    window.addEventListener('beforeunload', () => {
+        if (unsubscribeFromAuth) unsubscribeFromAuth();
+        if (window.unsubscribeFromDB) window.unsubscribeFromDB();
+    });
+    
+    console.log('Todo App: Fully initialized with Firebase Authentication and Firestore listeners.');
 }
 
 // Start the application!

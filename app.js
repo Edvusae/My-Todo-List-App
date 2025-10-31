@@ -1,5 +1,3 @@
-// src/app.js
-
 import { state, clearLocalState } from './modules/state.js';
 import { renderTaskList, renderWeather, setupDOMReferences, toggleModal, getTaskFormData, toggleVisibility } from './dom/render.js';
 import { fetchWeather } from './modules/weather.js';

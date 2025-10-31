@@ -3,67 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Interactive Todo List</title>
+    <title>My Interactive Todo List (Authenticated)</title>
+    
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="styles/components.css">
-    </head>
+</head>
 <body>
+    
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 
-     <div id="auth-ui" class="auth-ui">
-    <div id="auth-status"></div>
-    <form id="auth-form">
-        <input type="email" id="auth-email" placeholder="Email" required>
-        <input type="password" id="auth-password" placeholder="Password" required>
-        <button type="submit" id="auth-sign-in-btn" class="btn btn-primary">Sign In</button>
-        <button type="button" id="auth-sign-up-btn" class="btn btn-secondary">Sign Up</button>
-    </form>
-    <button type="button" id="auth-sign-out-btn" class="btn btn-danger hidden">Sign Out</button>
-    </div>
+    <script>
+        // **IMPORTANT: REPLACE with your actual Firebase Project Configuration**
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
 
-    <div class="container">
-        <h1>My Todo List</h1>
+        // Initialize Firebase and expose services globally for our modules
+        firebase.initializeApp(firebaseConfig);
+        window.auth = firebase.auth();
+        window.db = firebase.firestore();
+    </script>
+    
+    <div class="main-layout-wrapper"> <div id="auth-container" class="auth-ui container">
+            
+            <div id="auth-status">Please Sign In or Sign Up.</div>
 
-        <div id="weather-display" class="weather-widget">
-            <p class="weather-loading">Loading weather...</p>
+            <form id="auth-form">
+                <input type="email" id="auth-email" placeholder="Email" required>
+                <input type="password" id="auth-password" placeholder="Password" required>
+                
+                <button type="submit" id="auth-sign-in-btn" class="btn btn-primary">Sign In</button>
+                <button type="button" id="auth-sign-up-btn" class="btn btn-secondary">Sign Up</button>
+            </form>
+            
+            <button type="button" id="auth-sign-out-btn" class="btn btn-danger hidden">Sign Out</button>
         </div>
 
-        <form id="todo-form" class="todo-form">
-            <input type="text" id="todo-input" placeholder="Add a new task..." required>
-            <input type="number" id="todo-timer-input" placeholder="Time (seconds)" min="0">
-            <button type="submit" class="btn btn-primary">Add Task</button>
-        </form>
 
-        <ul id="todo-list" class="todo-list">
-            </ul>
+        <div id="todo-list-container" class="container hidden">
+            
+            <div id="weather-display" class="weather-widget">
+                <p class="weather-loading">Loading weather...</p>
+            </div>
+            
+            <h1>My Todo List</h1>
 
-        <div class="clear-completed-btn-container">
-            <button id="clear-completed" class="btn btn-danger">Clear Completed</button>
+            <form id="todo-form" class="todo-form">
+                <input type="text" id="todo-input" placeholder="Add a new task..." required>
+                <input type="number" id="todo-timer-input" placeholder="Time (seconds)" min="0">
+                <button type="submit" id="add-task-btn" class="btn btn-primary">Add Task</button>
+            </form>
+
+            <ul id="todo-list" class="todo-list">
+                </ul>
+
+            <div class="clear-completed-btn-container">
+                <button id="clear-completed" class="btn btn-danger">Clear Completed</button>
+            </div>
         </div>
+
+    </div> <div id="task-modal-overlay" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close-btn">&times;</button>
+            <h2>Edit Task</h2>
+            </div>
     </div>
+
 
     <script type="module" src="src/app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-
-<script>
-    // **IMPORTANT: Replace this config with your actual Firebase Project Configuration**
-    const firebaseConfig = {
-        apiKey: "YOUR_API_KEY",
-        authDomain: "YOUR_AUTH_DOMAIN",
-        projectId: "YOUR_PROJECT_ID",
-        storageBucket: "YOUR_STORAGE_BUCKET",
-        messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-        appId: "YOUR_APP_ID"
-    };
-
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-
-    // Make Firebase services globally accessible to our modules
-    window.auth = firebase.auth();
-    window.db = firebase.firestore();
-</script>
-<script type="module" src="src/app.js"></script>
 </body>
 </html>

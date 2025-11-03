@@ -80,7 +80,7 @@ body {
 
 /* Explicit width for the auth and todo panels */
 #auth-container {
-    width: 350px; /* Fixed width for the login panel */
+    width: 350px;
 }
 
 #todo-list-container {
@@ -91,7 +91,7 @@ body {
 /* Media Query for smaller screens (mobile view) */
 @media (max-width: 900px) {
     .main-layout-wrapper {
-        flex-direction: column; /* Stack the elements vertically */
+        flex-direction: column; 
         align-items: center;
         gap: 20px;
     }

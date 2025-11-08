@@ -1,9 +1,10 @@
-// timer.js
 import { state, updateTaskTime } from './state.js';
 import { updateTaskDisplay } from '../../dom.js'; // A function we'd create in dom.js
 
-let timerIntervals = {}; // To hold all active timer IDs
+// Object to hold interval references for each task
+let timerIntervals = {}; 
 
+// Starts the timer for a specific task
 export function startTimer(taskId) {
     if (timerIntervals[taskId]) return; // Timer is already running
 
@@ -27,6 +28,7 @@ export function startTimer(taskId) {
     }, 1000);
 }
 
+// Stops the timer for a specific task
 export function stopTimer(taskId) {
     if (timerIntervals[taskId]) {
         clearInterval(timerIntervals[taskId]);

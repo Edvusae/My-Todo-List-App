@@ -19,7 +19,7 @@ import {
 
 import { 
     fetchWeather 
-} from './modules/weather.js'; // Note: You need to replace the API Key in the weather module
+} from './modules/weather.js'; 
 
 // --- GLOBAL STATE REFERENCE (defined in the initial script setup) ---
 const state = window.state;
@@ -32,6 +32,7 @@ let currentDraggingElement = null;
  * Handles the central user authentication state change.
  * This is the CORE function that toggles the Auth/App UI visibility.
  */
+
 function handleAuthStateChange(user) {
     window.currentUser = user;
     DOMElements.authStatus.textContent = user 
@@ -82,7 +83,6 @@ function updateUIWithTasks(newTasks) {
     renderTaskList(state.tasks, handleTaskAction);
     console.log("UI Updated with new task list:", state.tasks);
 }
-
 
 // --- EVENT HANDLERS ---
 

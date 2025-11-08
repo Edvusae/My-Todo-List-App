@@ -1,6 +1,6 @@
-// --- IMPORTS ---
-// Note: We assume the database/auth globals (db, auth, currentUser, unsubscribeFromDB) 
-// are managed by the main script setup.
+// --- MAIN APPLICATION LOGIC (app.js) ---
+
+// Import necessary modules and functions
 import { 
     signUpUser, signInUser, signOutUser, onAuthStateChange 
 } from './modules/auth.js'; 

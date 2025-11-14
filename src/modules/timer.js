@@ -109,7 +109,8 @@ export function resetTimer(taskId) {
     const task = state.tasks.find(t => t.id === taskId);
     if (!task || !window.currentUser) return;
     
-    stopTimer(taskId); // Stop any running timer first
+    // First, stop any running timer
+    stopTimer(taskId);
 
     // Reset both the active state and time remaining to the limit
     updateTaskInDB(window.currentUser.uid, taskId, {
@@ -121,7 +122,7 @@ export function resetTimer(taskId) {
 }
 
 /**
- * Clears all locally stored timers (used on sign out).
+    * Clears all local timer intervals and resets state.
  */
 export function clearLocalState() {
     Object.keys(state.timers).forEach(taskId => {

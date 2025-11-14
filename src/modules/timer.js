@@ -1,4 +1,3 @@
-// src/modules/timer.js
 import { updateTaskInDB } from './database.js';
 import { setupDOMReferences } from '../dom/render.js';
 

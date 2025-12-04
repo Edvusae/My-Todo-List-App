@@ -1,5 +1,6 @@
 // src/modules/weather.js
-import { getGeolocation } from './util.js';
+// STEP 3: Fixed import path from './util.js' to './utility.js'
+import { getGeolocation } from './utility.js';
 
 const WEATHER_API_KEY = 'YOUR_API_KEY'; 
 
@@ -15,7 +16,7 @@ export async function fetchWeather() {
         
         const data = await response.json();
         return {
-            city: data.name,
+            name: data.name,
             temp: Math.round(data.main.temp),
             description: data.weather[0].description,
             icon: data.weather[0].icon
@@ -25,3 +26,5 @@ export async function fetchWeather() {
         return null; 
     }
 }
+
+// src/dom/render.js

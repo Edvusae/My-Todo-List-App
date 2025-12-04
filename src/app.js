@@ -290,6 +290,13 @@ function initializeApp() {
     
     DOMElements.editTaskForm.onsubmit = handleEditTaskSubmit;
     DOMElements.modalCloseBtn.onclick = () => toggleModal('hide');
+    
+    // STEP 5: Add Cancel button handler for the modal
+    const modalCancelBtn = document.getElementById('modal-cancel-btn');
+    if (modalCancelBtn) {
+        modalCancelBtn.onclick = () => toggleModal('hide');
+    }
+    
     DOMElements.modalOverlay.onclick = (e) => {
         if (e.target.id === DOMElements.modalOverlay.id) {
             toggleModal('hide');
@@ -306,4 +313,4 @@ function initializeApp() {
 }
 
 // Ensure initialization runs after all code is parsed
-window.onload = initializeApp;// --- DOM RENDERING MODULE (src/dom/render.js) ---
+window.onload = initializeApp;

@@ -6,7 +6,7 @@ let DOMElements = {};
  * 1. Collects all necessary DOM elements for global reference.
  * @returns {object} An object containing all referenced DOM elements.
  */
-export function setupDOMReferences() {
+function initializeDOMReferences() {
     DOMElements = {
         // --- Auth UI Elements ---
         authContainer: document.getElementById('auth-container'),
@@ -41,6 +41,20 @@ export function setupDOMReferences() {
     };
     return DOMElements;
 }
+
+/**
+ * EXPORTED: Getter function for DOM elements, called by other modules.
+ * This ensures external modules can access the references after initialization.
+ * @returns {object} The collected DOM elements.
+ */
+export function getDOMElements() {
+    // If references haven't been collected yet, initialize them now.
+    if (Object.keys(DOMElements).length === 0) {
+        initializeDOMReferences();
+    }
+    return DOMElements;
+}
+
 
 /**
  * Helper to get form data for a new task.
@@ -150,7 +164,8 @@ function createTaskElement(task, handleAction) {
         li.appendChild(timerDisplay);
         li.appendChild(actionsDiv);
     } else {
-         li.appendChild(actionsDiv); // Still show delete button even without timer
+        // If no timer, just append the delete button container
+        li.appendChild(actionsDiv); 
     }
     
     return li;
@@ -166,10 +181,15 @@ export function renderTaskList(tasks, handleAction) {
 
     DOMElements.taskList.innerHTML = '';
     
-    tasks.forEach(task => {
-        const taskElement = createTaskElement(task, handleAction);
-        DOMElements.taskList.appendChild(taskElement);
-    });
+    // If the tasks list is empty, display a placeholder message
+    if (tasks.length === 0) {
+        DOMElements.taskList.innerHTML = '<li class="text-center text-gray-500 py-8">No tasks yet. Add one to get started!</li>';
+    } else {
+        tasks.forEach(task => {
+            const taskElement = createTaskElement(task, handleAction);
+            DOMElements.taskList.appendChild(taskElement);
+        });
+    }
 
     // Re-attach the main delegation listener after full re-render
     DOMElements.taskList.onclick = handleAction; 
@@ -193,7 +213,8 @@ export function toggleModal(action, taskId = null) {
                 // Populate the form with current task data
                 DOMElements.editTaskID.value = taskId;
                 DOMElements.editTaskText.value = task.text;
-                DOMElements.editTaskTimeLimit.value = task.timeLimit;
+                // Use the original timeLimit for editing, not timeRemaining
+                DOMElements.editTaskTimeLimit.value = task.timeLimit; 
             }
         }
     } else {
@@ -209,7 +230,7 @@ export function renderWeather(data) {
     if (!data || !DOMElements.weatherDisplay) return;
 
     const { name, weather, main } = data;
-    const iconUrl = `http://openweathermap.org/img/wn/${weather[0].icon}@2x.png`;
+    const iconUrl = `https://openweathermap.org/img/wn/${weather[0].icon}@2x.png`;
     
     DOMElements.weatherDisplay.innerHTML = `
         <div class="weather-city">${name}</div>
@@ -219,5 +240,6 @@ export function renderWeather(data) {
     `;
 }
 
-// Ensure the setup function is the first call outside of the module
-setupDOMReferences();
+// *** REMOVED: The self-executing setupDOMReferences() call ***
+// The references will now be initialized when getDOMElements() is called by app.js.
+

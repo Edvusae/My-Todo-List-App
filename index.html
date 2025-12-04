@@ -14,24 +14,26 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 
-    <script>
-        // **IMPORTANT: REPLACE with your actual Firebase Project Configuration**
-        const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_AUTH_DOMAIN",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_STORAGE_BUCKET",
-            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-            appId: "YOUR_APP_ID"
-        };
+    <script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-analytics.js";
+  const firebaseConfig = {
+      apiKey: "AIzaSyD_S_rxwEfuc-J6FLmJD9rOVDpE3WLirL4",
+  authDomain: "prodev-todo-app.firebaseapp.com",
+  projectId: "prodev-todo-app",
+    storageBucket: "prodev-todo-app.firebasestorage.app",
+    messagingSenderId: "403302448036",
+    appId: "1:403302448036:web:bd61508fcfab3b0f1bdf31",
+    measurementId: "G-RKYRH782KC"
+  };
 
-        // Initialize Firebase and expose services globally for our modules
-        firebase.initializeApp(firebaseConfig);
-        window.auth = firebase.auth();
-        window.db = firebase.firestore();
-    </script>
-    
-    <div class="main-layout-wrapper"> <div id="auth-container" class="auth-ui container">
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+</script>
+    <div class="main-layout-wrapper">
+        <div id="auth-container" class="auth-ui container">
             
             <div id="auth-status">Please Sign In or Sign Up.</div>
 
@@ -62,18 +64,55 @@
             </form>
 
             <ul id="todo-list" class="todo-list">
-                </ul>
+            </ul>
 
             <div class="clear-completed-btn-container">
                 <button id="clear-completed" class="btn btn-danger">Clear Completed</button>
             </div>
         </div>
 
-    </div> <div id="task-modal-overlay" class="modal-overlay">
+    </div>
+
+    <!-- Complete Modal Structure with Form -->
+    <div id="task-modal-overlay" class="modal-overlay">
         <div class="modal-content">
-            <button class="modal-close-btn">&times;</button>
+            <button id="modal-close-btn" class="modal-close-btn">&times;</button>
             <h2>Edit Task</h2>
-            </div>
+            
+            <!-- Complete edit form with all required fields -->
+            <form id="edit-task-form">
+                <!-- Hidden field to store the task ID being edited -->
+                <input type="hidden" id="edit-task-id">
+                
+                <!-- Task text input -->
+                <div class="form-group">
+                    <label for="edit-task-text">Task Name:</label>
+                    <input 
+                        type="text" 
+                        id="edit-task-text" 
+                        placeholder="Enter task name..." 
+                        required
+                    >
+                </div>
+                
+                <!-- Time limit input -->
+                <div class="form-group">
+                    <label for="edit-task-time-limit">Time Limit (seconds):</label>
+                    <input 
+                        type="number" 
+                        id="edit-task-time-limit" 
+                        placeholder="Time in seconds" 
+                        min="0"
+                    >
+                </div>
+                
+                <!-- Submit button -->
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <button type="button" id="modal-cancel-btn" class="btn btn-secondary">Cancel</button>
+                </div>
+            </form>
+        </div>
     </div>
 
 
